@@ -12,9 +12,13 @@ class VanishingPoints():
         point = pygame.image.load('assets/vanishing_point.png').convert()
         return point
     
+    # def center(self, pos_x:
+        # rect = self.rays.get_rect(center=(pos_x))
+    
     def draw_ray(self, surface, pos_x):
         # Must activate when left mouse button is clicked
-        surface.blit(self.rays, pos_x)
+        rect = self.rays.get_rect(center=pos_x)
+        surface.blit(self.rays, rect)
 
 
 def main():
