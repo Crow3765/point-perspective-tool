@@ -1,23 +1,22 @@
 import pygame
-
+import math
 
 class VanishingPoints():
 
-    def __init__(self, pos_y=(500, 500)):
+    def __init__(self):
         self.color = pygame.Color(0, 0, 0)
-        # self.pos1 = self.get_pos1()
-        self.pos_y = pos_y
 
-    # def get_pos1(self):
-        # pos1 = pygame.mouse.get_pos()
-        # print(pos1)
-        # return pos1
+    def end(self, resolution, pos_x):
+        # Needs to extend to the edge of the canvas
+        angle = math.radians(45)
+        x = pos_x[0] + resolution[0] * math.cos(angle)
+        y = pos_x[1] + resolution[1] * math.sin(angle)
+        pos_y = (x, y)
+        return pos_y
 
-    def draw_rays(self, surface, pos_x):
-        # if self.pos1 == (0, 0):
-            # return
+    def draw_rays(self, surface, pos_x, pos_y):
         # Must activate when left mouse button is clicked
-        pygame.draw.line(surface, self.color, pos_x, self.pos_y, 3)
+        pygame.draw.line(surface, self.color, pos_x, pos_y, 3)
 
 
 def main():
@@ -25,7 +24,7 @@ def main():
     pygame.display.set_caption('point perspective tool')
     resolution = (1400, 800)
     screen = pygame.display.set_mode(resolution)
-    rays = VanishingPoints((500, 500))
+    rays = VanishingPoints()
     running = True
     while running:
         # Program Event Loop
@@ -37,11 +36,15 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
         # Program Logic
+        try:
+            pos_y = rays.end(resolution, pos_x)
+        except UnboundLocalError:
+            pass
         # Render & Display
         color = pygame.Color(255, 255, 255)
         screen.fill(color)
         if pygame.mouse.get_pressed()[0] == True:
-            rays.draw_rays(screen, pos_x)
+            rays.draw_rays(screen, pos_x, pos_y)
         pygame.display.flip()
     pygame.quit()
 
