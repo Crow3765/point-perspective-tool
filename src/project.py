@@ -9,11 +9,8 @@ class VanishingPoints():
     
     def point(self):
         # The image
-        point = pygame.image.load('assets/vanishing_point.png').convert()
+        point = pygame.image.load('assets/vanishing_point.png').convert_alpha()
         return point
-    
-    # def center(self, pos_x:
-        # rect = self.rays.get_rect(center=(pos_x))
     
     def draw_ray(self, surface, pos_x):
         # Must activate when left mouse button is clicked
@@ -24,8 +21,6 @@ class VanishingPoints():
 def main():
     pygame.init()
     pygame.display.set_caption('point perspective tool')
-    clock = pygame.time.Clock()
-    dt = 0
     resolution = (1400, 800)
     screen = pygame.display.set_mode(resolution)
     rays = VanishingPoints()
@@ -42,17 +37,18 @@ def main():
         # Program Logic
 
         # Render & Display
-        color = pygame.Color(255, 255, 255)
+        color = pygame.Color(0, 255, 255)
         screen.fill(color)
         # Keeps the image on the screen
         try:
             rays.draw_ray(screen, pos_x)
         except UnboundLocalError:
             pass
+        border = pygame.image.load('assets/border.png').convert_alpha()
+        screen.blit(border, (0, 0))
         pygame.display.flip()
-        dt = clock.tick(12)
     pygame.quit()
-# (951, 601)
+
 
 if __name__ == "__main__":
     main()
