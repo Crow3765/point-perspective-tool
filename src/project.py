@@ -22,14 +22,14 @@ class VanishingPoints():
     def _create_area(self, surface):
         pygame.draw.rect(surface, (255, 0, 0), self.collision)
     
-    def draw_point(self, surface, pos_x):
-        # Must activate when left mouse button is clicked
-        rect = self.rays.get_rect(center=pos_x)
-        # clips to specified area area
-        if not self.collision.collidepoint(pos_x):
-            return
-        else:
-            surface.blit(self.rays, rect)
+    def draw_point(self, surface, pos):
+        # Must activate when left mouse button is clicked, max three times
+        for n in pos:
+            rect = self.rays.get_rect(center=n)
+            if not self.collision.collidepoint(n):
+                return
+            else:
+                surface.blit(self.rays, rect)
     # (x : <->, y : ^v)
 
 
@@ -38,6 +38,9 @@ def main():
     pygame.display.set_caption('point perspective tool')
     resolution = (1470, 816)
     screen = pygame.display.set_mode(resolution)
+    min_clicks = 0
+    max_clicks = 3
+    pos = []
     rays = VanishingPoints()
     # game
     running = True
@@ -46,8 +49,12 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0] == True:
-                    pos_x = pygame.mouse.get_pos()
-                    print(pos_x)
+                    if min_clicks < max_clicks:
+                        pos_x = pygame.mouse.get_pos()
+                        print(pos_x)
+                        pos.append(pos_x)
+                        min_clicks += 1
+                        # stops left clicking entirely after 3 clicks
             if event.type == pygame.QUIT:
                 running = False
         # Program Logic
@@ -55,9 +62,8 @@ def main():
         # Render & Display
         screen.fill(color)
         rays._create_area(screen)
-        # Keeps the image on the screen
         try:
-            rays.draw_point(screen, pos_x)
+            rays.draw_point(screen, pos)
         except UnboundLocalError:
             pass
         border = pygame.image.load('assets/border.png').convert_alpha()
