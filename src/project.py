@@ -33,6 +33,16 @@ class VanishingPoints():
     # (x : <->, y : ^v)
 
 
+class SaveFile():
+
+    def __init__(self, canvas):
+        self.area = canvas
+
+    def save(self, surface):
+        area = surface.subsurface(self.area)
+        pygame.image.save(area, "point-perspective-guidelines.png")
+
+
 def main():
     pygame.init()
     pygame.display.set_caption('point perspective tool')
@@ -42,6 +52,7 @@ def main():
     max_clicks = 3
     pos = []
     rays = VanishingPoints()
+    save_canvas = SaveFile(rays.collision_box())
     # game
     running = True
     while running:
@@ -55,6 +66,9 @@ def main():
                         pos.append(pos_x)
                         min_clicks += 1
                         # stops left clicking entirely after 3 clicks
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_s:
+                    save_canvas.save(screen)
             if event.type == pygame.QUIT:
                 running = False
         # Program Logic
