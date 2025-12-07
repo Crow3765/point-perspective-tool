@@ -2,48 +2,44 @@ import pygame
 import math
 
 
-class ColoredButtons():
-
-    def __init__(self):
-        self.area = self.button()
-        self.pos = (1100, 5)
-
-    def button(self):
-        button = pygame.image.load('assets/colors_button.png').convert_alpha()
-        return button
-
-    def colors(self):
-        # To simplify process, use colored buttons with predefined palettes to 
-        # set all vanishing points to those colors when pressed
-        pass
-
-    def set_area(self, surface):
-        surface.blit(self.area, self.pos)
-
 class VanishingPoints():
 
     def __init__(self):
         self.color = pygame.Color(0, 0, 0)
         self.rays = self.point()
+        self.collision = self.collision_box()
     
     def point(self):
-        # The image
+        # point image
         point = pygame.image.load('assets/vanishing_point.png').convert_alpha()
         return point
+    
+    def collision_box(self):
+        # collision image
+        box = pygame.Rect(109, 101, 1252, 614)
+        return box
+
+    def _create_area(self, surface):
+        pygame.draw.rect(surface, (255, 0, 0), self.collision)
     
     def draw_point(self, surface, pos_x):
         # Must activate when left mouse button is clicked
         rect = self.rays.get_rect(center=pos_x)
-        surface.blit(self.rays, rect)
+        # clips to specified area area
+        if not self.collision.collidepoint(pos_x):
+            return
+        else:
+            surface.blit(self.rays, rect)
+    # (x : <->, y : ^v)
 
 
 def main():
     pygame.init()
     pygame.display.set_caption('point perspective tool')
-    resolution = (1400, 800)
+    resolution = (1470, 816)
     screen = pygame.display.set_mode(resolution)
-    cb = ColoredButtons()
     rays = VanishingPoints()
+    # game
     running = True
     while running:
         # Program Event Loop
@@ -55,10 +51,10 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
         # Program Logic
-
-        # Render & Display
         color = pygame.Color(0, 255, 255)
+        # Render & Display
         screen.fill(color)
+        rays._create_area(screen)
         # Keeps the image on the screen
         try:
             rays.draw_point(screen, pos_x)
@@ -66,7 +62,6 @@ def main():
             pass
         border = pygame.image.load('assets/border.png').convert_alpha()
         screen.blit(border, (0, 0))
-        cb.set_area(screen)
         pygame.display.flip()
     pygame.quit()
 
