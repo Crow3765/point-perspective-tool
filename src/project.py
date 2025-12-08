@@ -70,7 +70,13 @@ class Rectangle():
         pygame.draw.rect(surface, (255, 0, 0), self.button_zone)
             
     def detect_click(self, pos_x):
-        pass
+        shown = False
+        if self.button_zone.collidepoint(pos_x):
+            if pygame.mouse.get_pressed()[0] and not self.clicked:
+                shown = True
+                self.clicked = True
+                print('collide')
+        return shown
     
     # rectangle
     def rectangle(self):
@@ -121,7 +127,7 @@ def main():
     min_clicks = 0
     max_clicks = 3
     pos = []
-    pixels = 10 # pixels per press
+    rectangle_visible = False
     # classes
     rays = VanishingPoints()
     save_canvas = SaveFile(rays.collision_box())
@@ -154,9 +160,12 @@ def main():
         rays._create_area(screen)
         try:
             rays.draw_point(screen, pos)
+            if rectangle.detect_click(pos_x):
+                rectangle_visible = True
         except UnboundLocalError:
             pass
-        rectangle.update_rectangle(screen)
+        if rectangle_visible:
+            rectangle.update_rectangle(screen)
         border = pygame.image.load('assets/border.png').convert_alpha()
         screen.blit(border, (0, 0))
         rectangle._create_area(screen)
