@@ -36,13 +36,22 @@ class SaveFile():
 
     def __init__(self, canvas):
         self.area = canvas
-        self.clicked = False
+        self.script = self.font()
 
     def save(self, surface):
         area = surface.subsurface(self.area)
         pygame.image.save(area, "point-perspective-guidelines.png")
         print('Image saved to src folder.')
 
+    def font(self):
+        font = pygame.font.SysFont('Verdana', 25)
+        return font
+    
+    def render_font(self, surface):
+            text = self.script.render(
+                "Image saved to 'point-perspective-tool/src' folder.", True, \
+                (200, 200, 200))
+            surface.blit(text, (10, 775))
 
 class Rectangle():
 
@@ -111,7 +120,7 @@ class Rectangle():
         self.frame.width = max(0, self.frame.width)
         self.frame.height = max(0, self.frame.height)
     
-    def update_rectangle(self, surface):
+    def draw_rectangle(self, surface):
         pygame.draw.rect(surface, (0, 255, 0), self.frame, 3)
 
 
@@ -125,6 +134,9 @@ def main():
     max_clicks = 3
     pos = []
     rectangle_visible = False
+    show_text = False
+    text_start = 0
+    text_end = 1500 # in milliseconds
     # classes
     rays = VanishingPoints()
     save_canvas = SaveFile(rays.collision_box())
@@ -144,6 +156,8 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_s and pygame.key.get_mods() and \
                                 pygame.KMOD_META:
+                    show_text = True
+                    text_start = pygame.time.get_ticks()
                     save_canvas.save(screen)
                 rectangle.shrink_keys(event)
                 rectangle.move_keys(event)
@@ -160,9 +174,14 @@ def main():
         except UnboundLocalError:
             pass
         if rectangle_visible:
-            rectangle.update_rectangle(screen)
+            rectangle.draw_rectangle(screen)
         border = pygame.image.load('assets/border.png').convert_alpha()
         screen.blit(border, (0, 0))
+        if show_text:
+            save_canvas.render_font(screen)
+            current_time = pygame.time.get_ticks()
+            if current_time - text_start > text_end:
+                    show_text = False
         pygame.display.flip()
     pygame.quit()
 
