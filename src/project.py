@@ -1,5 +1,4 @@
 import pygame
-import math
 
 
 class VanishingPoints():
@@ -31,7 +30,6 @@ class VanishingPoints():
                 return
             else:
                 surface.blit(self.rays, rect)
-    # (x : <->, y : ^v)
 
 
 class SaveFile():
@@ -43,7 +41,7 @@ class SaveFile():
     def save(self, surface):
         area = surface.subsurface(self.area)
         pygame.image.save(area, "point-perspective-guidelines.png")
-        print('Image saved.')
+        print('Image saved to src folder.')
 
 
 class Rectangle():
@@ -62,7 +60,7 @@ class Rectangle():
     # button
     def collision_box(self):
         # collision image
-        zone = pygame.Rect(28, 376, 53, 53)
+        zone = pygame.Rect(28, 132, 53, 53)
         return zone
     
     def _create_area(self, surface):
@@ -75,7 +73,6 @@ class Rectangle():
             if pygame.mouse.get_pressed()[0] and not self.clicked:
                 shown = True
                 self.clicked = True
-                print('collide')
         return shown
     
     # rectangle
@@ -139,7 +136,6 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos_x = pygame.mouse.get_pos()
-                print(pos_x)
                 if pygame.mouse.get_pressed()[2] == True:
                     if min_clicks < max_clicks:
                         pos.append(pos_x)
@@ -154,10 +150,9 @@ def main():
             elif event.type == pygame.QUIT:
                 running = False
         # Program Logic
-        color = pygame.Color(0, 255, 255)
+        color = pygame.Color(174, 166, 166)
         # Render & Display
         screen.fill(color)
-        rays._create_area(screen)
         try:
             rays.draw_point(screen, pos)
             if rectangle.detect_click(pos_x):
@@ -168,7 +163,6 @@ def main():
             rectangle.update_rectangle(screen)
         border = pygame.image.load('assets/border.png').convert_alpha()
         screen.blit(border, (0, 0))
-        rectangle._create_area(screen)
         pygame.display.flip()
     pygame.quit()
 
