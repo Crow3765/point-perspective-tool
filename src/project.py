@@ -10,7 +10,8 @@ class VanishingPoints():
     
     def point(self):
         # point image
-        point = pygame.image.load('assets/vanishing_point.png').convert_alpha()
+        point = pygame.image.load(
+                'assets/vanishing_point.png').convert_alpha()
         return point
     
     def collision_box(self):
@@ -30,7 +31,6 @@ class VanishingPoints():
                 return
             else:
                 surface.blit(self.rays, rect)
-
 
 class SaveFile():
 
