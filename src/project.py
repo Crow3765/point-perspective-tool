@@ -149,10 +149,13 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos_x = pygame.mouse.get_pos()
                 if pygame.mouse.get_pressed()[2] == True:
-                    if min_clicks < max_clicks:
-                        pos.append(pos_x)
-                        min_clicks += 1
-                        # stops right clicking entirely after 3 clicks
+                    if rays.collision.collidepoint(pos_x):
+                        if min_clicks < max_clicks:
+                            pos.append(pos_x)
+                            min_clicks += 1
+                            # stops right clicking entirely after 3 clicks
+                    else:
+                        pass
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_s and pygame.key.get_mods() and \
                                 pygame.KMOD_META:
